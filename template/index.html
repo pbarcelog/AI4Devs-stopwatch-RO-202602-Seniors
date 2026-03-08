@@ -1,13 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Timer and Countdown</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timer and Countdown</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<h1>Timer and Countdown</h1>
-<script src="script.js"></script>
+  <header class="header">
+    <h1>Timer and Countdown</h1>
+  </header>
+
+  <main id="view-landing" class="view">
+    <p class="lead">Choose a mode</p>
+    <div class="choice-grid">
+      <a href="#" id="link-stopwatch" class="choice-card choice-stopwatch">
+        <span class="choice-title">Stopwatch</span>
+        <span class="choice-desc">Count up from 00:00:00</span>
+      </a>
+      <a href="#" id="link-countdown" class="choice-card choice-countdown">
+        <span class="choice-title">Countdown</span>
+        <span class="choice-desc">Count down from a set time</span>
+      </a>
+    </div>
+  </main>
+
+  <main id="view-stopwatch" class="view hidden">
+    <a href="#" id="back-stopwatch" class="back-link">← Back</a>
+    <div class="panel">
+      <div class="display" aria-live="polite">
+        <span class="main-time" id="stopwatch-main">00:00:00</span>
+        <span id="stopwatch-millis-wrap" class="millis-wrap hidden" aria-hidden="true">
+          <span class="millis" id="stopwatch-millis">000</span>
+        </span>
+      </div>
+      <div class="buttons">
+        <button type="button" class="btn btn-primary" id="stopwatch-primary-btn">Start</button>
+        <button type="button" class="btn btn-reset" id="stopwatch-reset-btn">Reset</button>
+      </div>
+    </div>
+  </main>
+
+  <main id="view-countdown" class="view hidden">
+    <a href="#" id="back-countdown" class="back-link">← Back</a>
+    <div class="panel">
+      <div class="display" aria-live="polite">
+        <span class="main-time" id="countdown-main">00:00:00</span>
+        <span id="countdown-millis-wrap" class="millis-wrap hidden" aria-hidden="true">
+          <span class="millis" id="countdown-millis">000</span>
+        </span>
+      </div>
+      <div class="countdown-edit">
+        <label for="countdown-h">Hours</label>
+        <input type="number" id="countdown-h" min="0" max="99" value="0" aria-label="Hours">
+        <label for="countdown-m">Minutes</label>
+        <input type="number" id="countdown-m" min="0" max="59" value="0" aria-label="Minutes">
+        <label for="countdown-s">Seconds</label>
+        <input type="number" id="countdown-s" min="0" max="59" value="0" aria-label="Seconds">
+      </div>
+      <p id="countdown-error" class="error-msg hidden" role="alert"></p>
+      <div class="buttons">
+        <button type="button" class="btn btn-primary" id="countdown-primary-btn">Start</button>
+        <button type="button" class="btn btn-reset" id="countdown-reset-btn">Reset</button>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="script.js"></script>
 </body>
 </html>

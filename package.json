@@ -1,0 +1,16 @@
+{
+  "name": "AI4Devs-stopwatch",
+  "version": "1.0.0",
+  "description": "Timer and Countdown web app",
+  "type": "module",
+  "scripts": {
+    "start": "serve template -l 3000",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "happy-dom": "^15.11.7",
+    "serve": "^14.2.4",
+    "vitest": "^2.1.6"
+  }
+}
