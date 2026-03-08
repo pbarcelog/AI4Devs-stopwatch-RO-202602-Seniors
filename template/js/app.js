@@ -50,7 +50,14 @@ export function initApp(doc = document) {
           ? countdownView
           : landing;
     if (active) active.classList.remove('hidden');
-    if (viewId === VIEW_COUNTDOWN) applyCountdownInput();
+    const countdownState = countdown.getState();
+    if (
+      viewId === VIEW_COUNTDOWN &&
+      countdownState !== 'running' &&
+      countdownState !== 'paused'
+    ) {
+      applyCountdownInput();
+    }
   }
 
   function renderStopwatch() {
@@ -87,10 +94,10 @@ export function initApp(doc = document) {
   }
 
   function applyCountdownInput() {
-    const h = countdownH ? parseInt(countdownH.value, 10) : 0;
-    const m = countdownM ? parseInt(countdownM.value, 10) : 0;
-    const s = countdownS ? parseInt(countdownS.value, 10) : 0;
-    const result = parseAndValidateCountdown(h, m, s);
+    const strH = countdownH ? countdownH.value : '';
+    const strM = countdownM ? countdownM.value : '';
+    const strS = countdownS ? countdownS.value : '';
+    const result = parseAndValidateCountdown(strH, strM, strS);
     if (result.error) {
       if (countdownError) {
         countdownError.textContent = result.error;
@@ -102,11 +109,7 @@ export function initApp(doc = document) {
       countdownError.textContent = '';
       countdownError.classList.add('hidden');
     }
-    const clamped = clampCountdownInput(
-      Number.isNaN(h) ? 0 : h,
-      Number.isNaN(m) ? 0 : m,
-      Number.isNaN(s) ? 0 : s
-    );
+    const clamped = clampCountdownInput(result.h, result.m, result.s);
     if (countdownH) countdownH.value = String(clamped.h).padStart(2, '0');
     if (countdownM) countdownM.value = String(clamped.m).padStart(2, '0');
     if (countdownS) countdownS.value = String(clamped.s).padStart(2, '0');
@@ -156,9 +159,10 @@ export function initApp(doc = document) {
 
   if (countdownPrimaryBtn) {
     countdownPrimaryBtn.addEventListener('click', () => {
-      if (countdown.getState() === 'running') countdown.pause();
+      const countdownState = countdown.getState();
+      if (countdownState === 'running') countdown.pause();
       else {
-        applyCountdownInput();
+        if (countdownState !== 'paused' && !applyCountdownInput()) return;
         countdown.start();
       }
     });

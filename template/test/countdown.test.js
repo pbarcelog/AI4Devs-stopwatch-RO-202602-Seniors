@@ -41,7 +41,9 @@ describe('countdown state and display', () => {
     vi.advanceTimersByTime(1000);
     cd.pause();
     expect(cd.getState()).toBe(COUNTDOWN_STATES.STATE_PAUSED);
+    expect(cd.isMillisVisible()).toBe(true);
     const atPause = cd.getDisplayMs();
+    expect(cd.getDisplayMs()).toBe(atPause);
     vi.advanceTimersByTime(2000);
     expect(cd.getDisplayMs()).toBe(atPause);
     cd.start();

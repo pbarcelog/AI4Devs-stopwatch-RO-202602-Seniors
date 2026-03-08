@@ -36,15 +36,20 @@ describe('time formatting', () => {
 
 describe('countdown parsing and validation', () => {
   it('parses valid H,M,S to totalMs', () => {
-    expect(parseAndValidateCountdown(0, 0, 0)).toEqual({ totalMs: 0 });
-    expect(parseAndValidateCountdown(0, 1, 30)).toEqual({ totalMs: 90000 });
-    expect(parseAndValidateCountdown(1, 0, 0)).toEqual({ totalMs: 3600000 });
-    expect(parseAndValidateCountdown('1', '2', '3')).toEqual({ totalMs: 3723000 });
+    expect(parseAndValidateCountdown(0, 0, 0)).toMatchObject({ totalMs: 0 });
+    expect(parseAndValidateCountdown(0, 1, 30)).toMatchObject({ totalMs: 90000 });
+    expect(parseAndValidateCountdown(1, 0, 0)).toMatchObject({ totalMs: 3600000 });
+    expect(parseAndValidateCountdown('1', '2', '3')).toMatchObject({ totalMs: 3723000 });
   });
 
   it('returns error for non-numeric values', () => {
     const r = parseAndValidateCountdown('a', 0, 0);
     expect(r).toHaveProperty('error');
+  });
+
+  it('returns error for non-whole-number values', () => {
+    expect(parseAndValidateCountdown('1.5', '0', '0')).toHaveProperty('error');
+    expect(parseAndValidateCountdown('', '0', '0')).toHaveProperty('error');
   });
 
   it('returns error for hours out of range', () => {

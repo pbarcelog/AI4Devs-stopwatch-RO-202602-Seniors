@@ -25,25 +25,32 @@ export function formatMsToDisplay(ms) {
 }
 
 /**
- * Parse and validate countdown input. Returns total milliseconds or an error.
- * @param {string|number} h - hours (0-99)
- * @param {string|number} m - minutes (0-59)
- * @param {string|number} s - seconds (0-59)
- * @returns {{ totalMs: number } | { error: string }}
+ * Parse and validate countdown input. Accepts raw string values; rejects non-whole-number input.
+ * @param {string} h - hours (0-99), whole number only
+ * @param {string} m - minutes (0-59), whole number only
+ * @param {string} s - seconds (0-59), whole number only
+ * @returns {{ totalMs: number, h: number, m: number, s: number } | { error: string }}
  */
 export function parseAndValidateCountdown(h, m, s) {
-  const num = (v) => (typeof v === 'string' ? v.trim() : String(v));
-  const hh = parseInt(num(h), 10);
-  const mm = parseInt(num(m), 10);
-  const ss = parseInt(num(s), 10);
-  if (Number.isNaN(hh) || Number.isNaN(mm) || Number.isNaN(ss)) {
-    return { error: 'Invalid: values must be numbers' };
+  const raw = (v) => (typeof v === 'string' ? v.trim() : String(v ?? ''));
+  const strH = raw(h);
+  const strM = raw(m);
+  const strS = raw(s);
+
+  if (!/^\d+$/.test(strH) || !/^\d+$/.test(strM) || !/^\d+$/.test(strS)) {
+    return { error: 'Invalid: values must be whole numbers' };
   }
+
+  const hh = parseInt(strH, 10);
+  const mm = parseInt(strM, 10);
+  const ss = parseInt(strS, 10);
+
   if (hh < 0 || hh > 99) return { error: 'Hours must be between 0 and 99' };
   if (mm < 0 || mm > 59) return { error: 'Minutes must be between 0 and 59' };
   if (ss < 0 || ss > 59) return { error: 'Seconds must be between 0 and 59' };
+
   const totalMs = (hh * 3600 + mm * 60 + ss) * 1000;
-  return { totalMs };
+  return { totalMs, h: hh, m: mm, s: ss };
 }
 
 /**

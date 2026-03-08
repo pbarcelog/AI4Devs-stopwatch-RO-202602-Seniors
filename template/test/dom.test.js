@@ -4,24 +4,55 @@ import { initApp } from '../js/app.js';
 function createAppDOM() {
   const doc = document.implementation.createHTMLDocument('Test');
   doc.body.innerHTML = `
-    <div id="view-landing"></div>
-    <div id="view-stopwatch" class="hidden">
-      <span id="stopwatch-main">00:00:00</span>
-      <span id="stopwatch-millis-wrap" class="hidden"><span id="stopwatch-millis">000</span></span>
-      <button type="button" id="stopwatch-primary-btn">Start</button>
-      <button type="button" id="stopwatch-reset-btn">Reset</button>
-    </div>
-    <div id="view-countdown" class="hidden">
-      <span id="countdown-main">00:00:00</span>
-      <span id="countdown-millis-wrap" class="hidden"><span id="countdown-millis">000</span></span>
-      <input type="number" id="countdown-h" value="0">
-      <input type="number" id="countdown-m" value="0">
-      <input type="number" id="countdown-s" value="30">
-      <button type="button" id="countdown-primary-btn">Start</button>
-      <button type="button" id="countdown-reset-btn">Reset</button>
-    </div>
+    <main>
+      <section id="view-landing"></section>
+      <section id="view-stopwatch" class="view hidden">
+        <a href="#" id="back-stopwatch" class="back-link">← Back</a>
+        <div class="panel">
+          <div class="display" role="timer" aria-label="Stopwatch">
+            <span class="main-time" id="stopwatch-main">00:00:00</span>
+            <span id="stopwatch-millis-wrap" class="millis-wrap hidden" aria-hidden="true"><span class="millis" id="stopwatch-millis">000</span></span>
+          </div>
+          <div class="buttons">
+            <button type="button" class="btn btn-primary" id="stopwatch-primary-btn">Start</button>
+            <button type="button" class="btn btn-reset" id="stopwatch-reset-btn">Reset</button>
+          </div>
+        </div>
+      </section>
+      <section id="view-countdown" class="view hidden">
+        <a href="#" id="back-countdown" class="back-link">← Back</a>
+        <div class="panel">
+          <div class="display" role="timer" aria-label="Countdown">
+            <span class="main-time" id="countdown-main">00:00:00</span>
+            <span id="countdown-millis-wrap" class="millis-wrap hidden" aria-hidden="true"><span class="millis" id="countdown-millis">000</span></span>
+          </div>
+          <div class="countdown-edit">
+            <label for="countdown-h">Hours</label>
+            <input type="number" id="countdown-h" min="0" max="99" value="0" aria-label="Hours">
+            <label for="countdown-m">Minutes</label>
+            <input type="number" id="countdown-m" min="0" max="59" value="0" aria-label="Minutes">
+            <label for="countdown-s">Seconds</label>
+            <input type="number" id="countdown-s" min="0" max="59" value="0" aria-label="Seconds">
+          </div>
+          <p id="countdown-error" class="error-msg hidden" role="alert"></p>
+          <div class="buttons">
+            <button type="button" class="btn btn-primary" id="countdown-primary-btn">Start</button>
+            <button type="button" class="btn btn-reset" id="countdown-reset-btn">Reset</button>
+          </div>
+        </div>
+      </section>
+    </main>
   `;
   return doc;
+}
+
+function setCountdownInputs(doc, h, m, s) {
+  const elH = doc.getElementById('countdown-h');
+  const elM = doc.getElementById('countdown-m');
+  const elS = doc.getElementById('countdown-s');
+  if (elH) { elH.value = String(h); elH.dispatchEvent(new Event('input', { bubbles: true })); }
+  if (elM) { elM.value = String(m); elM.dispatchEvent(new Event('input', { bubbles: true })); }
+  if (elS) { elS.value = String(s); elS.dispatchEvent(new Event('input', { bubbles: true })); }
 }
 
 describe('DOM behaviour', () => {
@@ -74,6 +105,7 @@ describe('DOM behaviour', () => {
     it('primary button toggles Start/Pause and countdown runs', () => {
       const { showView } = initApp(doc);
       showView('countdown');
+      setCountdownInputs(doc, 0, 0, 30);
       const btn = doc.getElementById('countdown-primary-btn');
       expect(btn.textContent).toBe('Start');
       btn.click();
@@ -88,6 +120,7 @@ describe('DOM behaviour', () => {
     it('Reset stops and returns to 00:00:00', () => {
       const { showView } = initApp(doc);
       showView('countdown');
+      setCountdownInputs(doc, 0, 0, 30);
       doc.getElementById('countdown-primary-btn').click();
       vi.advanceTimersByTime(1000);
       doc.getElementById('countdown-reset-btn').click();
@@ -98,6 +131,7 @@ describe('DOM behaviour', () => {
     it('inputs are disabled when countdown is running', () => {
       const { showView } = initApp(doc);
       showView('countdown');
+      setCountdownInputs(doc, 0, 0, 30);
       const h = doc.getElementById('countdown-h');
       const m = doc.getElementById('countdown-m');
       expect(h.disabled).toBe(false);
